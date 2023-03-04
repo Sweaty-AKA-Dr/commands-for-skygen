@@ -10,16 +10,32 @@ world.events.beforeChat.subscribe((eventData) => {
     data.cancel = true;
     switch (message.slice(1).toLowerCase()) {
       case "gmc":
-        player.runCommandAsync(`gamemode creative`);
+        if (player.hasTag("Admin")) {
+          player.runCommandAsync("gamemode creative");
+        } else {
+          player.tell("§cMissing permissions");
+        }
         break;
       case "gms":
-        player.runCommandAsync(`gamemode survival`);
+        if (player.hasTag("Admin")) {
+          player.runCommandAsync("gamemode survival");
+        } else {
+          player.tell("§cMissing permissions");
+        }
         break;
       case "gma":
-        player.runCommandAsync(`gamemode adventure`);
+        if (player.hasTag("Admin")) {
+          player.runCommandAsync("gamemode adventure");
+        } else {
+          player.tell("§cMissing permissions");
+        }
         break;
       case "gmspec":
-        player.runCommandAsync(`gamemode spectator`);
+        if (player.hasTag("Admin")) {
+          player.runCommandAsync("gamemode spectator");
+        } else {
+          player.tell("§cMissing permissions");
+        }
         break;
       case "warp spawn":
         player.runCommandAsync(`tag @s add spawn`);
@@ -39,11 +55,14 @@ world.events.beforeChat.subscribe((eventData) => {
       case "warp enchants":
         player.runCommandAsync(`tag @s add ench`);
         break;
-      case "warp spawn":
-        player.runCommandAsync(`tag @s add `);
+      case "warp customcrafting":
+        player.runCommandAsync(`tag @s add ccrafting`);
+        break;
+      case "help":
+        player.runCommandAsync(`tag @s add help`);
         break;
       default:
-        player.tell(`Unavailable command!`);
+        player.runCommandAsync(`tellraw @s {"rawtext":[{"text":"§c§l'${message}'§f§r is an unavailable command!\n§bTry '+help' For More Information"}]}`);
         break;
     }
   }

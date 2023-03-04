@@ -1,48 +1,50 @@
-const system = server.registerSystem(0, 0);
+import { world } from "@minecraft/server";
 
-system.listenForEvent("minecraft:player_message", (eventData) => {
-  const message = eventData.data.message;
-  const message = eventData.data.message.toLowerCase;
-  const player = eventData.data.sender;
+const prefix = "+";
 
-  if (message === "-spawn") {
-    system.executeCommand(`tag "${player.name}" add spawn`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-sell") {
-    system.executeCommand(`tag "${player.name}" add sell`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-shop") {
-    system.executeCommand(`tag "${player.name}" add shop`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-plots") {
-    system.executeCommand(`tag "${player.name}" add plots`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-parkour") {
-    system.executeCommand(`tag "${player.name}" add parkour`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-misc") {
-    system.executeCommand(`tag "${player.name}" add misc`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-donoinfo") {
-    system.executeCommand(`tag "${player.name}" add dono`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-enchants") {
-    system.executeCommand(`tag "${player.name}" add ench`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-help") {
-    system.executeCommand(`tag "${player.name}" add help`, () => {});
-    eventData.canceled = true;
-  } else if (message === "-vipsell") {
-    system.executeCommand(
-      `tag @a[name="${player.name}",tag=vip] add vipsell`,
-      () => {}
-    );
-    eventData.canceled = true;
-  } else if (message === "-cmds") {
-    system.executeCommand(
-      `tag @a[name="${player.name}",tag=Admin] add cmds`,
-      () => {}
-    );
-    eventData.canceled = true;
+world.events.beforeChat.subscribe((eventData) => {
+  const player = data.sender;
+  const message = data.message;
+
+  if (message.startsWith(prefix)) {
+    data.cancel = true;
+    switch (message.slice(1).toLowerCase()) {
+      case "gmc":
+        player.runCommandAsync(`gamemode creative`);
+        break;
+      case "gms":
+        player.runCommandAsync(`gamemode survival`);
+        break;
+      case "gma":
+        player.runCommandAsync(`gamemode adventure`);
+        break;
+      case "gmspec":
+        player.runCommandAsync(`gamemode spectator`);
+        break;
+      case "warp spawn":
+        player.runCommandAsync(`tag @s add spawn`);
+        break;
+      case "warp shop":
+        player.runCommandAsync(`tag @s add shop`);
+        break;
+      case "warp sell":
+        player.runCommandAsync(`tag @s add sell`);
+        break;
+      case "warp plots":
+        player.runCommandAsync(`tag @s add plots`);
+        break;
+      case "warp donation":
+        player.runCommandAsync(`tag @s add dono`);
+        break;
+      case "warp enchants":
+        player.runCommandAsync(`tag @s add ench`);
+        break;
+      case "warp spawn":
+        player.runCommandAsync(`tag @s add `);
+        break;
+      default:
+        player.tell(`Unavailable command!`);
+        break;
+    }
   }
 });

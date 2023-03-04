@@ -1,67 +1,35 @@
 {
 	"format_version": 2,
-	"metadata": {
-		"authors": [
-			"TM Grant"
-		],
-		"generated_with": {
-			"bridge": [
-				"2.6.0"
-			],
-			"dash": [
-				"0.10.8"
-			]
-		}
-	},
+  
 	"header": {
-		"name": "Custom commands",
-		"description": "Made By: TM Grant",
-		"min_engine_version": [
-			1,
-			19,
-			60
-		],
-		"uuid": "dac486d7-d76c-422a-82b8-86e18556beec",
-		"version": [
-			1,
-			0,
-			0
-		]
+	  "name": "Custom commands for Legends Skygen",
+	  "description": "V1.0.0",
+	  "uuid": "25ca3b4c-be4c-4496-ae21-10f5054bb925",
+	  "version": [1, 0, 0],
+	  "min_engine_version": [1, 19, 60]
 	},
+  
 	"modules": [
-		{
-			"type": "data",
-			"uuid": "2daadb95-a744-4020-a018-01f21d9d34d1",
-			"version": [
-				1,
-				0,
-				0
-			]
-		},
-		{
-			"type": "script",
-			"language": "javascript",
-			"uuid": "b65182f7-5a9d-44e9-8f5d-ab9f29b6d29a",
-			"entry": "scripts/main.js",
-			"version": [
-				1,
-				0,
-				0
-			]
-		}
+	  {
+		"type": "data",
+		"description": "Behavior Module",
+		"uuid": "879049f2-4a21-4812-8b0d-ef0f1d45d2e2",
+		"version": [1, 0, 0]
+	  },
+	  {
+		"type": "script",
+		"description": "Gametest Module",
+		"language": "javascript",
+		"uuid": "1342a696-f2c0-45f6-b7b9-2fc34715d4af",
+		"entry": "scripts/Main.js",
+		"version": [1, 0, 0]
+	  }
 	],
+  
 	"dependencies": [
-		{
-			"module_name": "@minecraft/server",
-			"version": "1.0.0-beta"
-		},
-		{
-			"module_name": "@minecraft/server-gametest",
-			"version": "1.0.0-beta"
-		},
-		{
-			"module_name": "@minecraft/server-ui",
-			"version": "1.0.0-beta"
-		}
+	  {
+		"module_name": "@minecraft/server",
+		"version": "1.1.0-beta"
+	  }
 	]
-}
+  }

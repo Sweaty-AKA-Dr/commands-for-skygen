@@ -107,6 +107,9 @@ world.events.beforeChat.subscribe((data) => {
       case "rules":
         player.runCommandAsync(`tag @s add rules`);
         break;
+      case "credits":
+        player.runCommandAsync(`tag @s add credits`);
+        break;
       default:
         player.tell(
           `§c§l'${message}'§f§r is an unavailable command!\n§bTry '+help' For More Information`

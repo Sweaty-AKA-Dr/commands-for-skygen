@@ -37,25 +37,25 @@ world.events.beforeChat.subscribe((eventData) => {
           player.tell("§cMissing permissions");
         }
         break;
-      case "warp spawn":
+      case "spawn":
         player.runCommandAsync(`tag @s add spawn`);
         break;
-      case "warp shop":
+      case "shop":
         player.runCommandAsync(`tag @s add shop`);
         break;
-      case "warp sell":
+      case "sell":
         player.runCommandAsync(`tag @s add sell`);
         break;
-      case "warp plots":
+      case "plots":
         player.runCommandAsync(`tag @s add plots`);
         break;
-      case "warp donation":
+      case "donation":
         player.runCommandAsync(`tag @s add dono`);
         break;
-      case "warp enchants":
+      case "enchants":
         player.runCommandAsync(`tag @s add ench`);
         break;
-      case "warp customcrafting":
+      case "customcrafting":
         player.runCommandAsync(`tag @s add ccrafting`);
         break;
       case "help":

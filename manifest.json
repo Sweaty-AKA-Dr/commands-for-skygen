@@ -3,8 +3,8 @@
   
 	"header": {
 	  "name": "Custom commands for Legends Skygen",
-	  "description": "V1.0.0",
-	  "uuid": "25ca3b4c-be4c-4496-ae21-10f5054bb925",
+	  "description": "V1.0.1",
+	  "uuid": "5c6f08e8-36c8-45de-bdca-3ec495f13dd0",
 	  "version": [1, 0, 0],
 	  "min_engine_version": [1, 19, 60]
 	},
@@ -21,7 +21,7 @@
 		"description": "Gametest Module",
 		"language": "javascript",
 		"uuid": "1342a696-f2c0-45f6-b7b9-2fc34715d4af",
-		"entry": "scripts/Main.js",
+		"entry": "scripts/main.js",
 		"version": [1, 0, 0]
 	  }
 	],

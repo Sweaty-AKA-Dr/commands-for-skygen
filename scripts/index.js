@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 
 const prefix = "+";
 
@@ -195,8 +195,44 @@ world.events.playerSpawn.subscribe((event) => {
       player.rotation.y
     );
     player.runCommandAsync("gamemode adventure");
-  } else if (player.hastag("in_combat")) {
+  } else if (player.hasTag("in_combat")) {
     player.addTag("warn");
-    player.runCommandAsync(`tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`);
+    player.runCommandAsync(
+      `tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`
+    );
   }
 });
+
+function getScore(target, value, useZero = true) {
+  try {
+    const objective = world.scoreboard.getObjective(value);
+    if (typeof target == "string")
+      return objective.getScore(objective.getParticipants().find((player) => player.displayName == target));
+    return objective.getScore(target.scoreboard);
+  } catch {
+    return useZero ? 0 : NaN;
+  }
+}
+
+function metricNumbers(value) {
+  const types = ["", "k", "M", "B"];
+  const selectType = (Math.log10(value) / 3) | 0;
+  if (selectType == 0) return value;
+  let scaled = value / Math.pow(10, selectType * 3);
+  return scaled.toFixed(2) + types[selectType];
+}
+
+system.runSchedule(() => {
+[...world.getPlayers()].forEach((player) => {
+  const name = player.name;
+  const balance = metricNumbers(getScore(player, "money"));
+  const time = metricNumbers(getScore(player, "hr"));
+  const kills = metricNumbers(getScore(player, "Kills"));
+  const deaths = metricNumbers(getScore(player, "Deaths"));
+  const kdr = getScore(player, "KDR");
+  const kdr_decimals = getScore(player, "KDR-Decimals");
+
+  const overworld = world.getDimension("overworld");
+  overworld.runCommandAsync(`titleraw @a title {"rawtext":[{"text":" §fName §c-\n§b${name}\n §fBalance §c-\n§a$§b${balance}\n §fTime Played §c-\n§b${time} Hours\n §fKills §c-\n§b${kills}\n §fDeaths §c-\n§b${deaths}\n/ §fK/D §c-\n§b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`);
+});
+})

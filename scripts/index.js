@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
- 
+
 const prefix = "+";
 
 world.events.beforeChat.subscribe((data) => {
@@ -127,22 +127,23 @@ world.events.beforeChat.subscribe((data) => {
         break;
       case "nightvision":
         if (!player.hasTag("nightvision")) {
-          player.runCommandAsync("/tag @s add nightvision");
+          player.runCommandAsync("tag @s add nightvision");
         } else if (player.hasTag("nightvision")) {
-          player.runCommandAsync("/tag @s remove nightvision");
+          player.runCommandAsync("tag @s remove nightvision");
         }
         break;
       case "nv":
         if (!player.hasTag("nightvision")) {
-          player.runCommandAsync("/tag @s add nightvision");
+          player.runCommandAsync("tag @s add nightvision");
         } else if (player.hasTag("nightvision")) {
-          player.runCommandAsync("/tag @s remove nightvision");
+          player.runCommandAsync("tag @s remove nightvision");
         }
-        case "feed":
-          player.runCommandAsync("/effect @s saturation 1 255 true");
-          break;
-          case "f":
-        player.runCommandAsync("/effect @s saturation 1 255 true");
+        break;
+      case "feed":
+        player.runCommandAsync("effect @s saturation 1 255 true");
+        break;
+      case "f":
+        player.runCommandAsync("effect @s saturation 1 255 true");
         break;
       default:
         player.tell(
@@ -197,8 +198,6 @@ world.events.playerSpawn.subscribe((event) => {
     player.runCommandAsync("gamemode adventure");
   } else if (player.hasTag("in_combat")) {
     player.runCommandAsync("tag @s add warn");
-    player.runCommandAsync(
-      `tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`
-    );
+    player.runCommandAsync(`tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`);
   }
 });

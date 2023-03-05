@@ -3,7 +3,7 @@
   
 	"header": {
 	  "name": "Custom commands for Legends Skygen",
-	  "description": "V1.0.1",
+	  "description": "V1.1.0",
 	  "uuid": "49fc904b-adbd-4d6a-b679-934766fd669b",
 	  "version": [1, 0, 0],
 	  "min_engine_version": [1, 19, 60]

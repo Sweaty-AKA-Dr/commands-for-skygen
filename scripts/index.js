@@ -1,5 +1,6 @@
 import { world } from "@minecraft/server";
-
+import { ActionFormData } from "@minecraft/server-ui";
+ 
 const prefix = "+";
 
 world.events.beforeChat.subscribe((data) => {
@@ -124,18 +125,24 @@ world.events.beforeChat.subscribe((data) => {
       case "credits":
         player.runCommandAsync(`tag @s add credits`);
         break;
-        case "nightvision":
-          if (!player.hasTag("nightvision")) {
-            player.runCommandAsync("/tag @s add nightvision");
-          } else if (player.hasTag("nightvision")) {
-            player.runCommandAsync("/tag @s remove nightvision");
-          }
-          case "nv":
+      case "nightvision":
         if (!player.hasTag("nightvision")) {
           player.runCommandAsync("/tag @s add nightvision");
         } else if (player.hasTag("nightvision")) {
           player.runCommandAsync("/tag @s remove nightvision");
         }
+        break;
+      case "nv":
+        if (!player.hasTag("nightvision")) {
+          player.runCommandAsync("/tag @s add nightvision");
+        } else if (player.hasTag("nightvision")) {
+          player.runCommandAsync("/tag @s remove nightvision");
+        }
+        case "feed":
+          player.runCommandAsync("/effect @s saturation 1 255 true");
+          break;
+          case "f":
+        player.runCommandAsync("/effect @s saturation 1 255 true");
         break;
       default:
         player.tell(

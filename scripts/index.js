@@ -1,5 +1,4 @@
 import { world } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
 
 const prefix = "+";
 
@@ -127,16 +126,16 @@ world.events.beforeChat.subscribe((data) => {
         break;
       case "nightvision":
         if (!player.hasTag("nightvision")) {
-          player.runCommandAsync("tag @s add nightvision");
+          player.addTag("nightvision");
         } else if (player.hasTag("nightvision")) {
-          player.runCommandAsync("tag @s remove nightvision");
+          player.removeTag("nightvision");
         }
         break;
       case "nv":
         if (!player.hasTag("nightvision")) {
-          player.runCommandAsync("tag @s add nightvision");
+          player.addTag("nightvision");
         } else if (player.hasTag("nightvision")) {
-          player.runCommandAsync("tag @s remove nightvision");
+          player.removeTag("nightvision");
         }
         break;
       case "feed":
@@ -196,8 +195,8 @@ world.events.playerSpawn.subscribe((event) => {
       player.rotation.y
     );
     player.runCommandAsync("gamemode adventure");
-  } else if (player.hasTag("in_combat")) {
-    player.runCommandAsync("tag @s add warn");
+  } else if (player.hastag("in_combat")) {
+    player.addTag("warn");
     player.runCommandAsync(`tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`);
   }
 });

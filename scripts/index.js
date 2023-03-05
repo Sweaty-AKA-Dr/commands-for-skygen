@@ -80,6 +80,13 @@ world.events.beforeChat.subscribe((data) => {
           player.tell("You must be out of combat to use this command.");
         }
         break;
+      case "dono":
+        if (!player.hasTag("in_combat")) {
+          player.addTag("dono");
+        } else if (player.hasTag("in_combat")) {
+          player.tell("You must be out of combat to use this command.");
+        }
+        break;
       case "enchants":
         if (!player.hasTag("in_combat")) {
           player.addTag("ench");
@@ -88,6 +95,13 @@ world.events.beforeChat.subscribe((data) => {
         }
         break;
       case "customcrafting":
+        if (!player.hasTag("in_combat")) {
+          player.addTag("ccrafting");
+        } else if (player.hasTag("in_combat")) {
+          player.tell("You must be out of combat to use this command.");
+        }
+        break;
+      case "cc":
         if (!player.hasTag("in_combat")) {
           player.addTag("ccrafting");
         } else if (player.hasTag("in_combat")) {
@@ -109,6 +123,19 @@ world.events.beforeChat.subscribe((data) => {
         break;
       case "credits":
         player.runCommandAsync(`tag @s add credits`);
+        break;
+        case "nightvision":
+          if (!player.hasTag("nightvision")) {
+            player.runCommandAsync("/tag @s add nightvision");
+          } else if (player.hasTag("nightvision")) {
+            player.runCommandAsync("/tag @s remove nightvision");
+          }
+          case "nv":
+        if (!player.hasTag("nightvision")) {
+          player.runCommandAsync("/tag @s add nightvision");
+        } else if (player.hasTag("nightvision")) {
+          player.runCommandAsync("/tag @s remove nightvision");
+        }
         break;
       default:
         player.tell(
@@ -147,5 +174,24 @@ world.events.entityHit.subscribe((data) => {
         attacked.removeTag("in_combat");
       }, 200);
     }
+  }
+});
+
+world.events.playerSpawn.subscribe((event) => {
+  const player = event.player;
+
+  if (event.initialSpawn) {
+    player.teleport(
+      { x: 0, y: 251, z: 0 },
+      player.dimension,
+      player.rotation.x,
+      player.rotation.y
+    );
+    player.runCommandAsync("gamemode adventure");
+  } else if (player.hasTag("in_combat")) {
+    player.runCommandAsync("tag @s add warn");
+    player.runCommandAsync(
+      `tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`
+    );
   }
 });

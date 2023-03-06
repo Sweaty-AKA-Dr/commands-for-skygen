@@ -147,13 +147,13 @@ world.events.beforeChat.subscribe((data) => {
       case "adminchat":
         if (player.hasTag("admin") && !player.hasTag("adminchat")) {
           player.addTag("adminchat");
-          player.tell("§8[§bPrison§8] §7You have enabled the §4Admin §7chat.");
+          player.tell("§8[§6Skygen§8] §7You have enabled the §4Admin §7chat.");
         } else if (player.hasTag("admin") && player.hasTag("adminchat")) {
           player.removeTag("adminchat");
-          player.tell("§8[§bPrison§8] §7You have disabled the §4Admin §7chat.");
+          player.tell("§8[§6Skygen§8] §7You have disabled the §4Admin §7chat.");
         } else
           player.tell(
-            "§8[§bPrison§8] §cYou don't have permission to be using this command."
+            "§8[§6Skygen§8] §cYou don't have permission to be using this command."
           );
         break;
 
@@ -257,6 +257,20 @@ system.runSchedule(() => {
 
 const overworld = world.getDimension("overworld");
 
+const rank_prefix = "rank:";
+const default_rank = "§fMember";
+
+function getRanks(player) {
+  const ranks = player
+    .getTags()
+    .map((v) => {
+      if (!v.startsWith(rank_prefix)) return null;
+      return v.substring(rank_prefix.length);
+    })
+    .filter((x) => x);
+  return ranks.length == 0 ? [default_rank] : ranks;
+}
+
 world.events.beforeChat.subscribe((data) => {
   data.sendToTargets = true;
   data.targets = [];
@@ -266,7 +280,10 @@ world.events.chat.subscribe((data) => {
   const player = data.sender;
   const message = data.message;
 
+  const ranks = getRanks(player);
+  const hours = String(getScore(player, "hr") + "H");
+
   if (player.hasTag("adminchat")) {
     overworld.runCommandAsync(`tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`);
-  } else world.say(`§7${player.name}: §f${message}`);
+  } else world.say(`§8[§a${hours}§r§8] §8[${ranks}§r§8] §7${player.name}: §f${message}`);
 });

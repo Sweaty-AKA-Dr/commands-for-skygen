@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 
 const prefix = "+";
 
@@ -226,7 +226,7 @@ function metricNumbers(value) {
   return scaled.toFixed(2) + types[selectType];
 }
 
-world.events.tick.subscribe(() => {
+system.runSchedule(() => {
   [...world.getPlayers()].forEach((player) => {
     const name = player.name;
     const balance = metricNumbers(getScore(player, "money"));
@@ -235,9 +235,9 @@ world.events.tick.subscribe(() => {
     const deaths = metricNumbers(getScore(player, "Deaths"));
     const kdr = getScore(player, "KDR");
     const kdr_decimals = getScore(player, "KDR-Decimals");
-    const overworld = world.getDimension("overworld");
-    overworld.runCommandAsync(
-      `titleraw @a[tag=admin] title {"rawtext":[{"text":" §fName §c-\n§b${name}\n §fBalance §c-\n§a$§b${balance}\n §fTime Played §c-\n§b${time} Hours\n §fRank §c-\n§8[§bAdmin§8]\n §fKills §c-\n§b${kills}\n §fDeaths §c-\n§b${deaths}\n/ §fK/D §c-\n§b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
+
+    player.runCommandAsync(
+      `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
     );
   });
 });

@@ -144,6 +144,19 @@ world.events.beforeChat.subscribe((data) => {
       case "f":
         player.runCommandAsync("effect @s saturation 1 255 true");
         break;
+      case "adminchat":
+        if (player.hasTag("admin") && !player.hasTag("adminchat")) {
+          player.addTag("adminchat");
+          player.tell("§8[§bPrison§8] §7You have enabled the §4Admin §7chat.");
+        } else if (player.hasTag("admin") && player.hasTag("adminchat")) {
+          player.removeTag("adminchat");
+          player.tell("§8[§bPrison§8] §7You have disabled the §4Admin §7chat.");
+        } else
+          player.tell(
+            "§8[§bPrison§8] §cYou don't have permission to be using this command."
+          );
+        break;
+
       default:
         player.tell(
           `§c§l'${message}'§f§r is an unavailable command!\n§bTry '+help' For More Information`
@@ -240,4 +253,20 @@ system.runSchedule(() => {
       `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
     );
   });
+});
+
+const overworld = world.getDimension("overworld");
+
+world.events.beforeChat.subscribe((data) => {
+  data.sendToTargets = true;
+  data.targets = [];
+});
+
+world.events.chat.subscribe((data) => {
+  const player = data.sender;
+  const message = data.message;
+
+  if (player.hasTag("adminchat")) {
+    overworld.runCommandAsync(`tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`);
+  } else world.say(`§7${player.name}: §f${message}`);
 });

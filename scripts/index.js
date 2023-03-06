@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { world } from "@minecraft/server";
 
 const prefix = "+";
 
@@ -207,7 +207,11 @@ function getScore(target, value, useZero = true) {
   try {
     const objective = world.scoreboard.getObjective(value);
     if (typeof target == "string")
-      return objective.getScore(objective.getParticipants().find((player) => player.displayName == target));
+      return objective.getScore(
+        objective
+          .getParticipants()
+          .find((player) => player.displayName == target)
+      );
     return objective.getScore(target.scoreboard);
   } catch {
     return useZero ? 0 : NaN;
@@ -222,17 +226,18 @@ function metricNumbers(value) {
   return scaled.toFixed(2) + types[selectType];
 }
 
-system.runSchedule(() => {
-[...world.getPlayers()].forEach((player) => {
-  const name = player.name;
-  const balance = metricNumbers(getScore(player, "money"));
-  const time = metricNumbers(getScore(player, "hr"));
-  const kills = metricNumbers(getScore(player, "Kills"));
-  const deaths = metricNumbers(getScore(player, "Deaths"));
-  const kdr = getScore(player, "KDR");
-  const kdr_decimals = getScore(player, "KDR-Decimals");
-
-  const overworld = world.getDimension("overworld");
-  overworld.runCommandAsync(`titleraw @a title {"rawtext":[{"text":" §fName §c-\n§b${name}\n §fBalance §c-\n§a$§b${balance}\n §fTime Played §c-\n§b${time} Hours\n §fKills §c-\n§b${kills}\n §fDeaths §c-\n§b${deaths}\n/ §fK/D §c-\n§b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`);
+world.events.tick.subscribe(() => {
+  [...world.getPlayers()].forEach((player) => {
+    const name = player.name;
+    const balance = metricNumbers(getScore(player, "money"));
+    const time = metricNumbers(getScore(player, "hr"));
+    const kills = metricNumbers(getScore(player, "Kills"));
+    const deaths = metricNumbers(getScore(player, "Deaths"));
+    const kdr = getScore(player, "KDR");
+    const kdr_decimals = getScore(player, "KDR-Decimals");
+    const overworld = world.getDimension("overworld");
+    overworld.runCommandAsync(
+      `titleraw @a[tag=admin] title {"rawtext":[{"text":" §fName §c-\n§b${name}\n §fBalance §c-\n§a$§b${balance}\n §fTime Played §c-\n§b${time} Hours\n §fRank §c-\n§8[§bAdmin§8]\n §fKills §c-\n§b${kills}\n §fDeaths §c-\n§b${deaths}\n/ §fK/D §c-\n§b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
+    );
+  });
 });
-})

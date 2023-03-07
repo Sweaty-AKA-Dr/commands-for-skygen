@@ -182,25 +182,32 @@ function setTickTimeout(callback, tick, loop = false) {
   });
 }
 
-world.events.entityHit.subscribe((data) => {
-  const attacker = data.entity;
-  const attacked = data.hitEntity;
-  if (attacker.typeId == "minecraft:player") {
-    if (attacked.typeId == "minecraft:player") {
-      attacker.addTag("in_combat");
-      attacked.addTag("in_combat");
-      setTickTimeout(() => {
-        attacker.removeTag("in_combat");
-        attacked.removeTag("in_combat");
-      }, 200);
-    }
-  }
+world.events.entityHurt.subscribe((data) => {
+  let attacker = data.damageSource.damagingEntity;
+  let attacked = data.hurtEntity;
+  if (
+    attacker.typeId === "minecraft:player" &&
+    attacked.typeId === "minecraft:player"
+  ) {
+    attacker.addTag("in_combat");
+    attacked.addTag("in_combat");
+    setTickTimeout(() => {
+      attacker.removeTag("in_combat");
+      attacked.removeTag("in_combat");
+    }, 200);
+  } else if (
+    attacker.typeId === "minecraft:player" &&
+    attacked.typeId === "minecraft:player" &&
+    attacked.getComponent("minecraft:health").current <= 0
+  ) {
+    attacker.removeTag("in_combat");
+    attacked.removeTag("in_combat");
+  } else return;
 });
 
-world.events.playerSpawn.subscribe((event) => {
-  const player = event.player;
-
-  if (event.initialSpawn) {
+world.events.playerSpawn.subscribe((data) => {
+  let player = data.player;
+  if (data.initialSpawn) {
     player.teleport(
       { x: 0, y: 251, z: 0 },
       player.dimension,
@@ -208,11 +215,9 @@ world.events.playerSpawn.subscribe((event) => {
       player.rotation.y
     );
     player.runCommandAsync("gamemode adventure");
-  } else if (player.hasTag("in_combat")) {
+  } else if (data.initialSpawn && player.hasTag("in_combat")) {
     player.addTag("warn");
-    player.runCommandAsync(
-      `tellraw @a {"rawtext":[{"text":"§c§lYou Have Been Warned For Combat Logging"}]}`
-    );
+    player.tell("§l§cYou have been warned for Combat Logging!");
   }
 });
 
@@ -250,7 +255,7 @@ system.runSchedule(() => {
     const kdr_decimals = getScore(player, "KDR-Decimals");
 
     player.runCommandAsync(
-      `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §fPvP Status §c-\n §8[§bPeace Period§8]\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
+      `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
     );
   });
 });
@@ -284,6 +289,53 @@ world.events.chat.subscribe((data) => {
   const hours = String(getScore(player, "hr") + "H");
 
   if (player.hasTag("adminchat")) {
-    overworld.runCommandAsync(`tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`);
-  } else world.say(`§8[§a${hours}§r§8] §8[${ranks}§r§8] §7${player.name}: §f${message}`);
+    overworld.runCommandAsync(
+      `tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`
+    );
+  } else
+    world.say(
+      `§8[§a${hours}§r§8] §8[${ranks}§r§8] §7${player.name}: §f${message}`
+    );
 });
+
+world.events.tick.subscribe(() => {
+  [...world.getPlayers()].forEach((player) => {
+    if (Math.abs(player.velocity.x) == 0 && Math.abs(player.velocity.z) == 0) {
+      player.runCommandAsync("scoreboard players add @s afkTimer 1");
+    } else player.runCommandAsync("scoreboard players set @s afkTimer 0");
+
+    if (getScore(player, "afkTimer") == 3000) {
+      player.tell(`You Will Be Kicked in 2 and a half minutes`);
+    }
+
+    if (getScore(player, "afkTimer") == 5900) {
+      player.tell(`You Will Be Kicked in 5`);
+    }
+
+    if (getScore(player, "afkTimer") == 5920) {
+      player.tell(`You Will Be Kicked in 4`);
+    }
+
+    if (getScore(player, "afkTimer") == 5940) {
+      player.tell(`You Will Be Kicked in 3`);
+    }
+
+    if (getScore(player, "afkTimer") == 5960) {
+      player.tell(`You Will Be Kicked in 2`);
+    }
+
+    if (getScore(player, "afkTimer") == 5980) {
+      player.tell(`You Will Be Kicked in 1`);
+    }
+
+    if (getScore(player, "afkTimer") == 5999) {
+      world.say(`${player.name} has been kicked for being AFK.`);
+    }
+
+    if (getScore(player, "afkTimer") == 6000) {
+      player.runCommandAsync(`kick ${player.name}`);
+    }
+  });
+});
+
+

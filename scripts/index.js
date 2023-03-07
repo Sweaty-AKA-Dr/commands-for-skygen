@@ -335,7 +335,8 @@ world.events.tick.subscribe(() => {
     if (getScore(player, "afkTimer") == 6000) {
       player.runCommandAsync(`kick ${player.name}`);
     }
+    if (getScore(player, 'afkTimer') > 6000) {
+      player.runCommandAsync('scoreboard players set @s afkTimer 0');
+    }
   });
 });
-
-

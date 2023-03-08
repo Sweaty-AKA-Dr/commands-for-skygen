@@ -255,7 +255,7 @@ system.runSchedule(() => {
     const kdr_decimals = getScore(player, "KDR-Decimals");
 
     player.runCommandAsync(
-      `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bDtm7JPbRx3§8]"}]}`
+      `titleraw @s title {"rawtext":[{"text":" §fName §c-\n§b ${name}\n §fBalance §c-\n §a$§b${balance}\n §fTime Played §c-\n §b${time} Hours\n §fKills §c-\n §b${kills}\n §fDeaths §c-\n §b${deaths}\n/ §fK/D §c-\n §b${kdr}.${kdr_decimals}%\n §f---------------\n §bRealm Info\n§f ---------------\n §fRealm Code §c-\n §8[§bJG8rwHwx3_s§8]\n §fDiscord Code §c-\n §8[§bceQPkvrJpr§8]"}]}`
     );
   });
 });
@@ -335,8 +335,18 @@ world.events.tick.subscribe(() => {
     if (getScore(player, "afkTimer") == 6000) {
       player.runCommandAsync(`kick ${player.name}`);
     }
-    if (getScore(player, 'afkTimer') > 6000) {
-      player.runCommandAsync('scoreboard players set @s afkTimer 0');
+    if (getScore(player, "afkTimer") > 6000) {
+      player.runCommandAsync("scoreboard players set @s afkTimer 0");
     }
   });
+});
+
+world.events.playerSpawn.subscribe((data) => {
+  let first_spawn = data.initialSpawn;
+  if (first_spawn && player.hasTag("banned")) {
+    player.runCommandAsync(
+      `kick ${player.name} You have been banned from this Realm, Appeal at https://discord.gg/ceQPkvrJpr!`
+    );
+    world.say(`${player.name} tried joining the Realm while they're banned.`);
+  }
 });

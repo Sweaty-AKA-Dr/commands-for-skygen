@@ -209,7 +209,7 @@ world.events.playerSpawn.subscribe((data) => {
   let player = data.player;
   if (data.initialSpawn) {
     player.teleport(
-      { x: 0, y: 251, z: 0 },
+      { x: 0.5, y: 251, z: 0.5 },
       player.dimension,
       player.rotation.x,
       player.rotation.y

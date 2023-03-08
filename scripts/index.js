@@ -2,6 +2,8 @@ import { system, world } from "@minecraft/server";
 
 const prefix = "+";
 
+console.warn("Importing Scripts");
+
 world.events.beforeChat.subscribe((data) => {
   const player = data.sender;
   const message = data.message;

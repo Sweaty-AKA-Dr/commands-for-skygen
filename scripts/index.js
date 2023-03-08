@@ -129,6 +129,7 @@ world.events.beforeChat.subscribe((data) => {
       case "nightvision":
         if (!player.hasTag("nightvision")) {
           player.addTag("nightvision");
+          player.tell("§b§lNight Vision§r §dEnabled");
         } else if (player.hasTag("nightvision")) {
           player.removeTag("nightvision");
         }
@@ -136,15 +137,18 @@ world.events.beforeChat.subscribe((data) => {
       case "nv":
         if (!player.hasTag("nightvision")) {
           player.addTag("nightvision");
+          player.tell("§b§lNight Vision§r §dEnabled");
         } else if (player.hasTag("nightvision")) {
           player.removeTag("nightvision");
         }
         break;
       case "feed":
         player.runCommandAsync("effect @s saturation 1 255 true");
+        player.tell("§l§eHunger Is Full");
         break;
       case "f":
         player.runCommandAsync("effect @s saturation 1 255 true");
+        player.tell("§l§eHunger Is Full");
         break;
       case "adminchat":
         if (player.hasTag("admin") && !player.hasTag("adminchat")) {
@@ -284,68 +288,124 @@ world.events.beforeChat.subscribe((data) => {
 });
 
 world.events.chat.subscribe((data) => {
-  const player = data.sender;
-  const message = data.message;
+  function metricNumbers(value) {
+    const types = ["", "k", "M", "B"];
+    const selectType = (Math.log10(value) / 3) | 0;
+    if (selectType == 0) return value;
+    let scaled = value / Math.pow(10, selectType * 3);
+    return scaled.toFixed(2) + types[selectType];
+  }
 
-  const ranks = getRanks(player);
-  const hours = String(getScore(player, "hr") + "H");
+  system.runSchedule(() => {
+    [...world.getPlayers()].forEach((player) => {
+      const name = player.name;
+      const balance = metricNumbers(getScore(player, "money"));
+      const time = metricNumbers(getScore(player, "hr"));
 
-  if (player.hasTag("adminchat")) {
-    overworld.runCommandAsync(
-      `tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`
-    );
-  } else
-    world.say(
-      `§8[§a${hours}§r§8] §8[${ranks}§r§8] §7${player.name}: §f${message}`
-    );
-});
+      const player = data.sender;
+      const message = data.message;
 
-world.events.tick.subscribe(() => {
-  [...world.getPlayers()].forEach((player) => {
-    if (Math.abs(player.velocity.x) == 0 && Math.abs(player.velocity.z) == 0) {
-      player.runCommandAsync("scoreboard players add @s afkTimer 1");
-    } else player.runCommandAsync("scoreboard players set @s afkTimer 0");
+      const ranks = getRanks(player);
+      const hours = String(getScore(player, "hr") + "H");
 
-    if (getScore(player, "afkTimer") == 3000) {
-      player.tell(`You Will Be Kicked in 2 and a half minutes`);
-    }
+      if (player.hasTag("adminchat")) {
+        overworld.runCommandAsync(
+          `tellraw @a[tag=admin] {"rawtext":[{"text":"§8[§4Admin§8] §7${player.name}: §f${message}"}]}`
+        );
+      } else
+        world.say(
+          `§8[§a${hours}§r, §a$§f${balance}§8] §8[${ranks}§r§8] §7${player.name}: §f${message}`
+        );
+    });
+  });
 
-    if (getScore(player, "afkTimer") == 5900) {
-      player.tell(`You Will Be Kicked in 5`);
-    }
+  world.events.tick.subscribe(() => {
+    [...world.getPlayers()].forEach((player) => {
+      if (
+        Math.abs(player.velocity.x) == 0 &&
+        Math.abs(player.velocity.z) == 0
+      ) {
+        player.runCommandAsync("scoreboard players add @s afkTimer 1");
+      } else player.runCommandAsync("scoreboard players set @s afkTimer 0");
 
-    if (getScore(player, "afkTimer") == 5920) {
-      player.tell(`You Will Be Kicked in 4`);
-    }
+      if (getScore(player, "afkTimer") == 3000) {
+        player.tell(`You Will Be Kicked in 2 and a half minutes`);
+      }
 
-    if (getScore(player, "afkTimer") == 5940) {
-      player.tell(`You Will Be Kicked in 3`);
-    }
+      if (getScore(player, "afkTimer") == 5900) {
+        player.tell(`You Will Be Kicked in 5`);
+      }
 
-    if (getScore(player, "afkTimer") == 5960) {
-      player.tell(`You Will Be Kicked in 2`);
-    }
+      if (getScore(player, "afkTimer") == 5920) {
+        player.tell(`You Will Be Kicked in 4`);
+      }
 
-    if (getScore(player, "afkTimer") == 5980) {
-      player.tell(`You Will Be Kicked in 1`);
-    }
+      if (getScore(player, "afkTimer") == 5940) {
+        player.tell(`You Will Be Kicked in 3`);
+      }
 
-    if (getScore(player, "afkTimer") == 5999) {
-      world.say(`${player.name} has been kicked for being AFK.`);
-    }
+      if (getScore(player, "afkTimer") == 5960) {
+        player.tell(`You Will Be Kicked in 2`);
+      }
 
-    if (getScore(player, "afkTimer") == 6000) {
-      player.runCommandAsync(`kick ${player.name}`);
-    }
-    if (getScore(player, "afkTimer") > 6000) {
-      player.runCommandAsync("scoreboard players set @s afkTimer 0");
+      if (getScore(player, "afkTimer") == 5980) {
+        player.tell(`You Will Be Kicked in 1`);
+      }
+
+      if (getScore(player, "afkTimer") == 5999) {
+        world.say(`${player.name} has been kicked for being AFK.`);
+      }
+
+      if (getScore(player, "afkTimer") == 6000) {
+        player.runCommandAsync(`kick ${player.name}`);
+      }
+      if (getScore(player, "afkTimer") > 6000) {
+        player.runCommandAsync("scoreboard players set @s afkTimer 0");
+      }
+    });
+  });
+
+  world.events.playerSpawn.subscribe((data) => {
+    let first_spawn = data.initialSpawn;
+    if (first_spawn && player.hasTag("banned")) {
+      world.say(
+        `§4${player.name}§f tried joining the Realm while they're banned.`
+      );
+      player.runCommandAsync("kick ${player.name} You Are Banned");
     }
   });
 });
 
-world.events.playerSpawn.subscribe((data) => {
-  let first_spawn = data.initialSpawn;
-  if (first_spawn && player.hasTag("banned")) {
-    world.say(`§4${player.name}§f tried joining the Realm while they're banned.`);
+function getScore(target, value, useZero = true) {
+  try {
+    const objective = world.scoreboard.getObjective(value);
+    if (typeof target == "string")
+      return objective.getScore(
+        objective
+          .getParticipants()
+          .find((player) => player.displayName == target)
+      );
+    return objective.getScore(target.scoreboard);
+  } catch {
+    return useZero ? 0 : NaN;
   }
+}
+
+function metricNumbers(value) {
+  const types = ["", "k", "M", "B"];
+  const selectType = (Math.log10(value) / 3) | 0;
+  if (selectType == 0) return value;
+  let scaled = value / Math.pow(10, selectType * 3);
+  return scaled.toFixed(2) + types[selectType];
+}
+
+system.runSchedule(() => {
+  [...world.getPlayers()].forEach((player) => {
+    const members = metricNumbers(getScore(player, "Members"));
+    const players = getScore(player, "POnline");
+
+    player.runCommandAsync(
+      `/titleraw @s actionbar {"rawtext":[{"text":"§l§c§c§f Total Members §c-§b ${members} \n§c §fPlayers Online§c - §b ${players}/11§e\n Game Version 1.10.0\n(Anti C-Log)\n§7§oDo +help to see the \ncommand list"}]}`
+    );
+  });
 });

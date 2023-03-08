@@ -343,12 +343,6 @@ world.events.tick.subscribe(() => {
   });
 });
 
-world.events.tick.subscribe((data) => {
-  if player.hasTag("banned") {
-    player.runCommandAsync(`kick ${player.name} You have been banned from this Realm, Appeal at https://discord.gg/ceQPkvrJpr!`);
-    }
-});
-
 world.events.playerSpawn.subscribe((data) => {
   let first_spawn = data.initialSpawn;
   if (first_spawn && player.hasTag("banned")) {

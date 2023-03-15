@@ -1,29 +1,40 @@
 {
-	"format_version": 2,
-	"header": {
-        "name": "§e§lLegends clock change",
-		"description": "v1.0.0",
-		"uuid": "f8b0886c-d3b8-473e-aa81-e5fef63d2923",
-		"version": [
-			2,
-			2,
-			4
-		],
-		"min_engine_version": [
-			1,
-			18,
-			12
-		]
-	},
-	"modules": [
-		{
-			"type": "resources",
-			"uuid": "3fe801a3-cfac-47e6-b45d-6458de85231a",
-			"version": [
-				2,
-				2,
-				4
-			]
-		}
-	]
-}
+    "format_version": 2,
+  
+    "header": {
+      "name": "§l§bChat Ranks §fFor §2Craft §aTheft §fAuto",
+      "description": "V1.0.0",
+      "uuid": "0225129e-82b5-4f84-b2c8-5c76314aee06",
+      "version": [2, 0, 0],
+      "min_engine_version": [1, 19, 60]
+    },
+  
+    "modules": [
+      {
+        "type": "data",
+        "description": "Behavior Module",
+        "uuid": "879049f2-4a21-4812-8b0d-ef0f1d45d2e2",
+        "version": [1, 0, 0]
+      },
+      {
+        "type": "script",
+        "description": "Gametest Module",
+        "language": "javascript",
+        "uuid": "1342a696-f2c0-45f6-b7b9-2fc34715d4af",
+        "entry": "scripts/index.js",
+        "version": [1, 0, 0]
+      }
+    ],
+  
+    "dependencies": [
+      {
+        "module_name": "@minecraft/server",
+        "version": "1.1.0-beta"
+      },
+      {
+        "module_name": "@minecraft/server-ui",
+        "version": "1.0.0-beta"
+      }
+    ]
+  }
+  
